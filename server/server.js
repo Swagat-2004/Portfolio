@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const Contact = require('./models/Contact');
 
 const app = express();
 
@@ -19,6 +20,21 @@ mongoose.connect(process.env.MONGO_URI)
 // Test route — just to check if server is alive
 app.get('/', (req, res) => {
   res.send('Portfolio backend is running!');
+});
+
+// Contact form route — receives data from frontend and saves to MongoDB
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+
+    const newContact = new Contact({ name, email, message });
+    await newContact.save();
+
+    res.status(201).json({ message: 'Message saved successfully!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Something went wrong.' });
+  }
 });
 
 // Start server
