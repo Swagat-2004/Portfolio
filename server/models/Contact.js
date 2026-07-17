@@ -1,29 +1,28 @@
-// models/Contact.js — Blueprint for contact form data
+import mongoose from "mongoose";
 
-const mongoose = require('mongoose');
+const contactSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+      trim: true,
+      maxlength: 100,
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
+    },
+    message: {
+      type: String,
+      required: [true, "Message is required"],
+      trim: true,
+      maxlength: 2000,
+    },
+  },
+  { timestamps: true }
+);
 
-// Schema = defines what fields a contact message will have
-const contactSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true, // naam dena zaroori hai
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  message: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now, // automatically current date/time save karega
-  },
-});
-
-// Model = ye schema ko ek "usable tool" banata hai jisse data save/fetch kar sakein
-// 'Contact' naam se MongoDB mein 'contacts' collection banegi (automatically plural)
-const Contact = mongoose.model('Contact', contactSchema);
-
-module.exports = Contact;
+export default mongoose.model("Contact", contactSchema);

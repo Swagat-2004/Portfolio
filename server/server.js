@@ -1,44 +1,33 @@
-// server.js — Main backend entry point
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import contactRoutes from "./routes/contact.js";
 
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const Contact = require('./models/Contact');
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());           // allows React (frontend) to talk to this server
-app.use(express.json());  // allows server to read JSON data from requests
+app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
+app.use(express.json());
 
-// Connect to MongoDB Atlas
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch((err) => console.error('❌ MongoDB connection error:', err));
+// Routes
+app.use("/api/contact", contactRoutes);
 
-// Test route — just to check if server is alive
-app.get('/', (req, res) => {
-  res.send('Portfolio backend is running!');
+app.get("/", (req, res) => {
+  res.send("Portfolio backend is running.");
 });
 
-// Contact form route — receives data from frontend and saves to MongoDB
-app.post('/api/contact', async (req, res) => {
-  try {
-    const { name, email, message } = req.body;
-
-    const newContact = new Contact({ name, email, message });
-    await newContact.save();
-
-    res.status(201).json({ message: 'Message saved successfully!' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Something went wrong.' });
-  }
-});
-
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+// Connect to MongoDB Atlas, then start the server
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB connected");
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1);
+  });
