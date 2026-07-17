@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import contactRoutes from "./routes/contact.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -31,3 +33,14 @@ mongoose
     console.error("MongoDB connection error:", err.message);
     process.exit(1);
   });
+  
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve React build files
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Catch-all route — React Router ke liye (agar use kiya hai)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+});
