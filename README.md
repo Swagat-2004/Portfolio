@@ -1,5 +1,7 @@
 # Swagat's Portfolio — Vercel-ready
 
+**Live**: https://portfolio-red-tau-64.vercel.app
+
 MERN-stack portfolio. Frontend (Vite + React + Tailwind) and backend
 (contact-form API as Vercel serverless functions) both deploy from this
 single project to Vercel.
@@ -9,11 +11,18 @@ single project to Vercel.
 /api/contact.js      -> serverless function, handles GET & POST /api/contact
 /api/lib/db.js        -> cached MongoDB connection (serverless-safe)
 /api/lib/ContactModel.js
+/api/lib/sendEmail.js -> Resend email notification on new submissions
 /src                  -> React frontend
 vercel.json           -> build config
 ```
 
-## Deploy to Vercel
+## Status
+
+- Deployed and live on Vercel, connected to a GitHub repo (auto-deploys on push to `main`)
+- MongoDB Atlas connected — every contact form submission is saved
+- Email notifications via Resend — set up once `RESEND_API_KEY` and `NOTIFY_EMAIL` are added in Vercel's Environment Variables and redeployed
+
+## Deploy to Vercel (for reference / redeploying elsewhere)
 
 1. Push this folder to a GitHub repo (or run `vercel` directly from here).
 2. On vercel.com -> **Add New Project** -> import the repo (or run `vercel`
@@ -29,6 +38,14 @@ vercel.json           -> build config
 6. Your contact form will POST to `/api/contact` on the same domain,
    no CORS setup required. Every submission is saved to MongoDB; if
    `RESEND_API_KEY` and `NOTIFY_EMAIL` are set, you'll also get an email.
+
+## Getting a Resend API key
+
+1. Sign up free at https://resend.com
+2. Dashboard -> API Keys -> Create API Key
+3. Copy the key — use this as `RESEND_API_KEY`
+4. No domain verification needed to start — Resend's shared test sender
+   (`onboarding@resend.dev`) works out of the box for this.
 
 ## Local development
 
