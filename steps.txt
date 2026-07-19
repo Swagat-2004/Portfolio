@@ -1,0 +1,44 @@
+PORTFOLIO
+
+create folder server (for backend) and client (for frontend) inside the PORTFOLIO folder.
+
+// basic checks
+   
+   node -v (check in terminal in vs code) {
+   npm -v (check in terminal in vs code)     both are use for backend } 
+
+// initialize backend
+   
+   open terminal in server folder
+   npm init -y (it will create a package.json file inside the server file. it will tells what packages are installed in entire package.)
+   npm install express mongoose cors dotenv (some mandatory packages must be installed.)
+
+// create .env file inside the server folder
+   for more details check .env file.
+
+// mongoDB Atlas
+   create datebase inside the project/cluster. if you try to create a another cluster inside the project it will ask for money (paid).
+   set language javascript and node.js. 
+   copy the string paste iit inside the .env file MONGO_URI=String
+// create server.js file inside the seerver folder
+   for more details check server.js.
+   After connect with mongoDB Atlas check server status by running "node server.js" in sever terminal
+
+// make server/models/Contacts
+   when frontend collects input from user and send it to backend then Contacts has a format database to send it to momgoDB database. 
+   (Contacts mai ik format hai kis format a data ko save karna hai in mongoDB atlas database mai. so isiliyebana rhe hai Contacts.)
+
+// check Routes
+   run the server "node server.js"
+   open new terminal then run "Invoke-RestMethod -Uri "http://localhost:5000/api/contact" -Method Post -ContentType "application/json" -Body '{"name":"Swagat Test","email":"test@example.com","message":"Hello, ye ek test message hai"}'"
+
+// You can update the data or enter new data to database through server.js file.	
+
+if it shows "message saved successfully" then database is working normally. then check in mongoDB atlas a new folder will be created to save data and the folder name will be whatever you have given in .env file.
+
+// Use POST when you sending something.
+//   Use GET when you want something.
+
+//Now start Frontend open client folder in terminal and enter "npm create vite@latest ."
+
+// how to run frontend -----> npm run dev

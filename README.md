@@ -1,85 +1,44 @@
-# Swagat's Portfolio — MERN Stack
+# Swagat's Portfolio — Vercel-ready
 
-Poora ready-made project: React (Vite + Tailwind) frontend + Express/MongoDB backend, Contact form dono se connected.
+MERN-stack portfolio. Frontend (Vite + React + Tailwind) and backend
+(contact-form API as Vercel serverless functions) both deploy from this
+single project to Vercel.
 
-## Folder Structure
-
+## Structure
 ```
-portfolio-project/
-├── backend/
-│   ├── models/Contact.js
-│   ├── routes/contact.js
-│   ├── server.js
-│   ├── package.json
-│   └── .env.example
-└── frontend/
-    ├── src/
-    │   ├── components/
-    │   │   ├── Navbar.jsx
-    │   │   ├── Hero.jsx
-    │   │   ├── About.jsx
-    │   │   ├── Skills.jsx
-    │   │   ├── Projects.jsx
-    │   │   ├── Contact.jsx
-    │   │   └── Footer.jsx
-    │   ├── App.jsx
-    │   ├── main.jsx
-    │   └── index.css
-    ├── index.html
-    ├── package.json
-    └── .env.example
+/api/contact.js      -> serverless function, handles GET & POST /api/contact
+/api/lib/db.js        -> cached MongoDB connection (serverless-safe)
+/api/lib/ContactModel.js
+/src                  -> React frontend
+vercel.json           -> build config
 ```
 
-## Setup — Backend
+## Deploy to Vercel
+
+1. Push this folder to a GitHub repo (or run `vercel` directly from here).
+2. On vercel.com -> **Add New Project** -> import the repo (or run `vercel`
+   in this folder via the CLI and follow the prompts).
+3. In **Project Settings -> Environment Variables**, add:
+   - `MONGO_URI` — your MongoDB Atlas connection string
+   - `RESEND_API_KEY` — from resend.com (free tier), only if you want email alerts
+   - `NOTIFY_EMAIL` — the email address you want messages sent to
+4. In **MongoDB Atlas -> Network Access**, add `0.0.0.0/0` to the IP
+   access list — Vercel serverless functions don't have a fixed IP.
+5. Deploy. Vercel auto-detects Vite for the frontend and treats every file
+   in `/api` as a serverless function automatically — no extra config needed.
+6. Your contact form will POST to `/api/contact` on the same domain,
+   no CORS setup required. Every submission is saved to MongoDB; if
+   `RESEND_API_KEY` and `NOTIFY_EMAIL` are set, you'll also get an email.
+
+## Local development
 
 ```bash
-cd backend
 npm install
-cp .env.example .env
+cp .env.example .env   # fill in MONGO_URI
+vercel dev             # runs frontend + /api functions together, like production
 ```
 
-`.env` file me apna MongoDB Atlas connection string daalo:
+(`vercel dev` needs the Vercel CLI: `npm install -g vercel`, then `vercel login`.)
 
-```
-PORT=5000
-MONGO_URI=your_mongodb_atlas_connection_string
-CLIENT_URL=http://localhost:5173
-```
-
-Run karo:
-
-```bash
-npm run dev
-```
-
-Backend `http://localhost:5000` par chalega. Contact form data `contacts` collection me save hoga.
-
-## Setup — Frontend
-
-```bash
-cd frontend
-npm install
-cp .env.example .env
-npm run dev
-```
-
-Frontend `http://localhost:5173` par chalega, aur `.env` me `VITE_API_URL=http://localhost:5000` set hai jo backend se baat karega.
-
-## Kya kya hai isme
-
-- **Navbar** — code editor tab bar jaisa (Hero.jsx, About.jsx, etc.), scroll pe active tab highlight hota hai, mobile pe hamburger menu.
-- **Hero** — intro section, GitHub + Contact button ke saath.
-- **About** — tumhari FYRP aur background.
-- **Skills** — grouped by Frontend / Backend / Cloud / CS Fundamentals.
-- **Projects** — FYRP, Weather App, Shopping Cart cards, GitHub links ke saath.
-- **Contact** — real form jo backend `/api/contact` route pe POST karta hai, MongoDB me save hota hai, success/error dono states handle hoti hain.
-- **Footer** — GitHub link + back to top.
-
-## Deploy karne ke liye (jab ready ho)
-
-- Backend: Render / Railway pe deploy karo, `MONGO_URI` aur `CLIENT_URL` (apna deployed frontend URL) env vars set karo.
-- Frontend: Vercel / Netlify pe deploy karo, `VITE_API_URL` ko apne deployed backend URL par set karo.
-
-## Note
-
-Ye fresh build hai (design + code), tumhare purane Hero.jsx / Navbar.jsx se match nahi karega agar tumne unme custom changes kiye the. Agar apna existing code merge karna hai, toh bas apne components ke andar ka JSX yahan wale structure me daal do — Tailwind classes aur file structure same rakhna taaki design consistent rahe.
+Plain `npm run dev` also works for frontend-only work, but `/api` routes
+won't respond unless you use `vercel dev`.
